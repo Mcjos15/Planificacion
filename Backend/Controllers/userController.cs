@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Backend.Interfaces;
+using Backend.models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -7,13 +9,34 @@ using System.Threading.Tasks;
 
 namespace Backend.Controllers
 {
-    public class userController : Controller
+    [Produces("application/json")]
+    [Route("api/[controller]")]
+    public class UserController : Controller
     {
-        // GET: userController
-        public ActionResult Index()
+
+        private readonly IUser _iUser;// = new IUser();
+        public UserController(IUser iUser)
         {
-            return View();
+            _iUser = iUser;
         }
+        // GET: userController
+        // [NoCache]
+        [HttpGet]
+        public async Task<List<User>> Get()
+        {
+
+            return await _iUser.GetAllUsers();
+
+        }
+        [HttpPost]
+        [Route("ruta2")]
+        public async Task<IActionResult> Post([FromBody] User user)
+        {
+             await _iUser.AddUSer(user);
+
+            return CreatedAtAction(nameof(Get), new { id = user.id }, user);
+        }
+
 
         // GET: userController/Details/5
         public ActionResult Details(int id)

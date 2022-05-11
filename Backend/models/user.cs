@@ -1,16 +1,23 @@
 ﻿using System;
+using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
 namespace Backend.models
 {
-    public class user
+    public class User
     {
-        private int id { get; set; }
-        private string name { get; set; }
-        private string correo { get; set; }
-        public user(int id, string name, string correo)
+        [BsonId]
+        [BsonRepresentation(BsonType.ObjectId)]
+        public string? id { get; set; }
+
+        [BsonElement("nombre")]
+        public string name { get; set; }
+        [BsonElement("correo")]
+        public string correo { get; set; }
+        [BsonElement("password")]
+        public string password { get; set; }
+        public User()
         {
-            this.id = id;
-            this.name = name;
-            this.correo = correo;
+       
         }
     }
 }

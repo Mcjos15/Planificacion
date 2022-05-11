@@ -9,6 +9,10 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Backend.DataBase;
+using Backend.Interfaces;
+using Backend.Services;
+using Microsoft.Extensions.Options;
 
 namespace Backend
 {
@@ -24,6 +28,22 @@ namespace Backend
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddCors(options => {
+                options.AddPolicy("CorsPolicy",
+         builder => builder.AllowAnyOrigin()
+                           .AllowAnyMethod()
+                           .AllowAnyHeader());
+            });
+            services.AddMvc();
+            services.Configure<Mongo>(options =>
+            {
+                options.ConnectionString
+                    = Configuration.GetSection("proyectoDB:ConnectionString").Value;
+                options.DatabaseName
+                    = Configuration.GetSection("proyectoDB:DatabaseName").Value;
+
+            });
+            services.AddTransient<IUser, UserService>();
             services.AddControllers();
         }
 
@@ -37,6 +57,7 @@ namespace Backend
 
             app.UseRouting();
 
+            app.UseCors("CorsPolicy");
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
