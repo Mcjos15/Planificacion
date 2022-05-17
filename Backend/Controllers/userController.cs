@@ -37,6 +37,7 @@ namespace Backend.Controllers
             return CreatedAtAction(nameof(Get), new { id = user.id }, user);
         }
         //[HttpGet("{correo}")]
+        [HttpPost]
         [Route("search")]
         //[HttpGet("{correo}")]
         public async Task<ActionResult<User>> Get([FromBody] User userFW)
