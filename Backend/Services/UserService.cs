@@ -7,28 +7,36 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-
+using MongoDB.Bson;
 namespace Backend.Services
 {
 
 
     public class UserService : IUser
     {
-        private readonly DBContextClass context = null;
-
+        //private readonly DBContextClass context = null;
+        private readonly IMongoCollection<User> _users;
         public UserService(IOptions<Mongo> mongo)
         {
-            context = new DBContextClass(mongo);
+            //context = new DBContextClass(mongo);
+
+            var mongoClient = new MongoClient(mongo.Value.ConnectionString);
+
+            var mongoDatabase = mongoClient.GetDatabase(mongo.Value.DatabaseName);
+
+            // _users = mongoDatabase.GetCollection<User>(mongo.Value.UsuariosCollectionName);
+            _users = mongoDatabase.GetCollection<User>("usuarios");
+            
         }
 
         public async Task AddUSer(User item) =>
-        await context.user.InsertOneAsync(item);
+        await _users.InsertOneAsync(item);
 
         public async Task<List<User>> GetAllUsers()
         {
             try
             {
-                return await context.user.Find(_ => true).ToListAsync();
+                return await _users.Find(_ => true).ToListAsync();
             }
             catch (Exception ex)
             {
@@ -38,14 +46,22 @@ namespace Backend.Services
             }
         }
 
-            public Task<User> GetUser(string id)
+            public async Task<User> GetUserByMail(string correo)
         {
-            throw new NotImplementedException();
-        }
+            try
+            {
 
-        public Task<IEnumerable<User>> GetUser(string bodyText, DateTime updatedFrom, long headerSizeLimit)
-        {
-            throw new NotImplementedException();
+                var builder = Builders<User>.Filter;
+                var filter = builder.Eq(User => User.correo,correo);
+
+                return await _users.Find(filter).FirstOrDefaultAsync();
+            }
+            catch (Exception ex)
+            {
+                // log or manage the exception
+                throw ex;
+
+            }
         }
 
 

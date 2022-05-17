@@ -43,8 +43,14 @@ namespace Backend
                     = Configuration.GetSection("proyectoDB:DatabaseName").Value;
 
             });
+
+            //Singleton objects are the same for every object and every request.
+            //services.AddSingleton<UserService>();
+            /*Transient objects are always different; a new instance is provided to every controller and every service
+            services.AddTransient<IUser, UserService>();*/
             services.AddTransient<IUser, UserService>();
-            services.AddControllers();
+            services.AddControllers().AddJsonOptions(
+        options => options.JsonSerializerOptions.PropertyNamingPolicy = null);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -11,6 +11,7 @@ namespace Backend.DataBase
 
     public class DBContextClass
     {
+        //IGNORAR
         private readonly IMongoDatabase _database = null;
 
         public DBContextClass(IOptions<Mongo> settings)

@@ -22,89 +22,33 @@ namespace Backend.Controllers
         // GET: userController
         // [NoCache]
         [HttpGet]
-        public async Task<List<User>> Get()
+        public async Task<List<User>> GetAll()
         {
 
             return await _iUser.GetAllUsers();
 
         }
         [HttpPost]
-        [Route("ruta2")]
+       // [Route("add")]
         public async Task<IActionResult> Post([FromBody] User user)
         {
              await _iUser.AddUSer(user);
 
             return CreatedAtAction(nameof(Get), new { id = user.id }, user);
         }
-
-
-        // GET: userController/Details/5
-        public ActionResult Details(int id)
+        //[HttpGet("{correo}")]
+        [Route("search")]
+        //[HttpGet("{correo}")]
+        public async Task<ActionResult<User>> Get([FromBody] User userFW)
         {
-            return View();
-        }
+          var user =  await _iUser.GetUserByMail(userFW.correo);
 
-        // GET: userController/Create
-        public ActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: userController/Create
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
-        {
-            try
+            if (user is null)
             {
-                return RedirectToAction(nameof(Index));
+                return Problem("Ningún usuario coincide con el correo ingresado");;
             }
-            catch
-            {
-                return View();
-            }
+            return user;
         }
 
-        // GET: userController/Edit/5
-        public ActionResult Edit(int id)
-        {
-            return View();
-        }
-
-        // POST: userController/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
-
-        // GET: userController/Delete/5
-        public ActionResult Delete(int id)
-        {
-            return View();
-        }
-
-        // POST: userController/Delete/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
     }
 }
