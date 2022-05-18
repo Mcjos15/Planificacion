@@ -13,6 +13,17 @@ namespace Backend.models
         [BsonElement("nombre")]
         [JsonPropertyName("Name")]
         public string name { get; set; }
+
+
+        [BsonElement("lastName")]
+
+        public string lastName { get; set; }
+
+
+        [BsonElement("date")]
+
+        public string date { get; set; }
+
         [BsonElement("correo")]
 
         public string correo { get; set; }
