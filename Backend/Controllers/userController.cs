@@ -32,9 +32,17 @@ namespace Backend.Controllers
        // [Route("add")]
         public async Task<IActionResult> Post([FromBody] User user)
         {
-             await _iUser.AddUSer(user);
+             
+            try
+            {
+                await _iUser.AddUSer(user);
 
-            return CreatedAtAction(nameof(Get), new { id = user.id }, user);
+                return CreatedAtAction(nameof(Get), new { id = user.id }, user);
+            }catch(Exception)
+            {
+                return Problem("Ningún usuario coincide con el correo ingresado"); ;
+            }
+
         }
         //[HttpGet("{correo}")]
         [HttpPost]
@@ -46,7 +54,7 @@ namespace Backend.Controllers
 
             if (user is null)
             {
-                return Problem("Ningún usuario coincide con el correo ingresado");;
+                return Problem("Ningún usuario coincide con el correo ingresado");
             }
             return user;
         }
