@@ -13,5 +13,7 @@ namespace Backend.DataBase
         public string DatabaseName { get; set; } = null!;
 
         public string UsuariosCollectionName { get; set; } = null!;
+
+        public string ConfiguracionesCollectionName { get; set; } = null!;
     }
 }

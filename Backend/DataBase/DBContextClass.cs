@@ -31,5 +31,15 @@ namespace Backend.DataBase
 
 
         }
+
+        public IMongoCollection<Configuraciones> configuraciones
+        {
+            get
+            {
+                return _database.GetCollection<Configuraciones>("configuraciones");
+            }
+
+
+        }
     }
 }

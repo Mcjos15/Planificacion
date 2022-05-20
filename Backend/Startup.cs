@@ -49,6 +49,7 @@ namespace Backend
             /*Transient objects are always different; a new instance is provided to every controller and every service
             services.AddTransient<IUser, UserService>();*/
             services.AddTransient<IUser, UserService>();
+            services.AddSingleton<IConfiguraciones,ConfiguracionesService>();
             services.AddControllers().AddJsonOptions(
         options => options.JsonSerializerOptions.PropertyNamingPolicy = null);
         }
