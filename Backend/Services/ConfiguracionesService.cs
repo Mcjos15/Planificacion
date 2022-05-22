@@ -20,7 +20,7 @@ namespace Backend.Services
         {
             //context = new DBContextClass(mongo);
 
-            var mongoClient = new MongoClient(mongo.Value.ConnectionString);
+            MongoClient mongoClient = new MongoClient(mongo.Value.ConnectionString);
 
             var mongoDatabase = mongoClient.GetDatabase(mongo.Value.DatabaseName);
 
