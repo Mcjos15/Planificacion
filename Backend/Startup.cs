@@ -50,6 +50,7 @@ namespace Backend
             services.AddTransient<IUser, UserService>();*/
             services.AddTransient<IUser, UserService>();
             services.AddSingleton<IConfiguraciones,ConfiguracionesService>();
+            services.AddSingleton<IDocument, DocumentService>();
             services.AddControllers().AddJsonOptions(
         options => options.JsonSerializerOptions.PropertyNamingPolicy = null);
         }
