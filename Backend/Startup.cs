@@ -28,12 +28,7 @@ namespace Backend
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddCors(options => {
-                options.AddPolicy("CorsPolicy",
-         builder => builder.AllowAnyOrigin()
-                           .AllowAnyMethod()
-                           .AllowAnyHeader());
-            });
+            
             services.AddMvc();
             services.Configure<Mongo>(options =>
             {
@@ -53,6 +48,13 @@ namespace Backend
             services.AddSingleton<IDocument, DocumentService>();
             services.AddControllers().AddJsonOptions(
         options => options.JsonSerializerOptions.PropertyNamingPolicy = null);
+            services.AddCors(options => {
+                options.AddPolicy("CorsPolicy",
+         builder => builder.AllowAnyOrigin()
+                           .AllowAnyMethod()
+                           .AllowAnyHeader());
+            });
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
