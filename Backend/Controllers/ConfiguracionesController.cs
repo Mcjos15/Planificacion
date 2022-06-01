@@ -37,5 +37,48 @@ namespace Backend.Controllers
 
             return Ok();
         }
+        [HttpGet]
+        [Route("getConfig/{id}")]
+        public async Task<ActionResult<Configuraciones>> Get(string id) {
+
+            var config = await _iConfiguraciones.getConfig(id);
+            if (config is null) {
+                return NotFound();
+            }
+            return config;
+        }
+
+        [HttpPut]
+        [Route("updateConfig/{id}")]
+        public async Task<IActionResult> Update(string id, [FromBody] Configuraciones configuraciones) {
+
+            var config = await _iConfiguraciones.getConfig(id);
+            if (config is null)
+            {
+                return NotFound();
+            }
+
+            configuraciones.id = config.id;
+
+            await _iConfiguraciones.Updateconfig(id, configuraciones);
+            return Ok();
+        }
+
+        [HttpDelete]
+        [Route("deleteConfig/{id}")]
+        public async Task<IActionResult> Delete(string id){
+
+            var config = await _iConfiguraciones.getConfig(id);
+            if (config is null)
+            {
+                return NotFound();
+            }
+
+            await _iConfiguraciones.RemoveConfig(id);
+
+            return Ok();
+        }
+
+
     }
 }

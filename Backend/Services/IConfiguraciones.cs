@@ -12,5 +12,14 @@ namespace Backend.Interfaces
         Task<List<Configuraciones>> GetAllConfigs();
 
         Task AddConfig(Configuraciones item);
+
+        Task<Configuraciones> getConfig(string id);
+
+        Task Updateconfig(string id, Configuraciones config);
+
+        Task RemoveConfig(string id);
+
+
+
     }
 }

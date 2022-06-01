@@ -29,7 +29,7 @@ namespace Backend.Services
 
         }
 
- 
+
         public async Task AddConfig(Configuraciones item) =>
        await _configuraciones.InsertOneAsync(item);
 
@@ -46,6 +46,26 @@ namespace Backend.Services
 
             }
         }
+
+        public async Task<Configuraciones> getConfig(string id) {
+            try
+            {
+                return await _configuraciones.Find(x => x.id == id).FirstOrDefaultAsync();
+            }
+            catch (Exception ex)
+            {
+                // log or manage the exception
+                throw ex;
+
+            }
+
+        }
+
+        public async Task Updateconfig(string id, Configuraciones config) =>
+         await _configuraciones.ReplaceOneAsync(x => x.id == id, config);
+
+        public async Task RemoveConfig(string id) =>
+            await _configuraciones.DeleteOneAsync(x => x.id == id);
 
     }
 
