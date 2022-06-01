@@ -14,7 +14,9 @@ namespace Backend.models
         [JsonPropertyName("propietario")]
         public string propietario { get; set; }
 
+        [BsonElement("name")]
 
+        public string name { get; set; }
         [BsonElement("type")]
 
         public string type { get; set; }

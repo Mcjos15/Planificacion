@@ -23,7 +23,7 @@ namespace Backend.Controllers
         [HttpGet]
         public async Task<List<Document>> GetAll()
         {
-
+            //Este sería el mepol
             return await _iDocument.GetAllDocuments();
 
         }
@@ -41,6 +41,17 @@ namespace Backend.Controllers
                 return Problem("Problema al insertar"); ;
             }
 
+        }
+
+        public async Task<ActionResult<Document>> Get([FromBody] Document document)
+        {
+            var docu = await _iDocument.GetDocumentById(document.id); 
+
+            if (docu is null)
+            {
+                return Problem("Ningún documento encontrado");
+            }
+            return docu;
         }
     }
 }
