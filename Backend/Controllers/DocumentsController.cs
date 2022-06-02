@@ -27,6 +27,8 @@ namespace Backend.Controllers
             return await _iDocument.GetAllDocuments();
 
         }
+
+        [HttpPost]
         public async Task<IActionResult> Post([FromBody] Document document)
         {
 
