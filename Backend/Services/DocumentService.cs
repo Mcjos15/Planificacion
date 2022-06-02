@@ -44,9 +44,20 @@ namespace Backend.Services
 
             }
         }
-        public Task<Document> GetDocumentById(string id)
+        public async Task<Document> GetDocumentById(string id)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var builder = Builders<Document>.Filter;
+                var filter = builder.Eq(Document => Document.id, id);
+                return await _documents.Find(filter).FirstOrDefaultAsync();
+            }
+            catch (Exception ex)
+            {
+                // log or manage the exception
+                throw ex;
+
+            }
         }
 
         public Task<bool> RemoveAllDocument()
@@ -54,10 +65,20 @@ namespace Backend.Services
             throw new NotImplementedException();
         }
 
-        public Task<bool> RemoveDocument(string id)
+        public async Task<bool> RemoveDocument(string id)
         {
-            throw new NotImplementedException();
+            try
+            {
+
+                await _documents.DeleteOneAsync(x => x.id == id);
+                return true;
+            }
+            catch(Exception e)
+            {
+                throw e;
+            }
         }
+
 
         public Task<bool> UpdateDocument(string id, Document document)
         {

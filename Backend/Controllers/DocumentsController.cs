@@ -21,7 +21,7 @@ namespace Backend.Controllers
         }
 
         [HttpGet]
-        public async Task<List<Document>> GetAll()
+        public async Task<List<Document>> get()
         {
             //Este sería el mepol
             return await _iDocument.GetAllDocuments();
@@ -29,14 +29,14 @@ namespace Backend.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody] Document document)
+        public async Task<IActionResult> post([FromBody] Document document)
         {
 
             try
             {
                 await _iDocument.AddDocument(document);
 
-                return CreatedAtAction(nameof(GetAll), new { id = document.id }, document);
+                return CreatedAtAction(nameof(get), new { id = document.id }, document);
             }
             catch (Exception)
             {
@@ -45,7 +45,9 @@ namespace Backend.Controllers
 
         }
 
-        public async Task<ActionResult<Document>> Get([FromBody] Document document)
+        [HttpPost]
+        [Route("search")]
+        public async Task<ActionResult<Document>> getById([FromBody] Document document)
         {
             var docu = await _iDocument.GetDocumentById(document.id); 
 
@@ -54,6 +56,23 @@ namespace Backend.Controllers
                 return Problem("Ningún documento encontrado");
             }
             return docu;
+        }
+
+
+        [HttpDelete]
+        [Route("delete/{id}")]
+        public async Task<IActionResult> delete( string id)
+        {
+
+            var docu = await _iDocument.GetDocumentById(id);
+            if (docu is null)
+            {
+                return NotFound();
+            }
+
+            await _iDocument.RemoveDocument(id);
+
+            return Ok();
         }
     }
 }
