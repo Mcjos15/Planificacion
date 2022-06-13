@@ -21,7 +21,7 @@ namespace Backend.Interfaces
 		Task<bool> UpdateDocument(string id, Document document);
 
 
-		Task<bool> RemoveAllDocument();
+		Task<List<Document>> RemoveAllDocument(List<Document> list);
 
 	}
 }

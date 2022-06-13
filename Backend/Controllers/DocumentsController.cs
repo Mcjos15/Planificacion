@@ -74,5 +74,21 @@ namespace Backend.Controllers
 
             return Ok();
         }
+
+        [HttpPost]
+        [Route("deleteMany")]
+        public async Task<ActionResult<List<Document>>> deleteMany([FromBody] List<Document> list)
+        {
+
+            var docu = await _iDocument.RemoveAllDocument(list);
+            if (docu is null)
+            {
+                return Problem("Ningún documento encontrado");
+            }
+
+            //await _iDocument.RemoveDocument(id);
+
+            return docu;
+        }
     }
 }

@@ -60,9 +60,22 @@ namespace Backend.Services
             }
         }
 
-        public Task<bool> RemoveAllDocument()
+       
+
+        public  async Task<List<Document>> RemoveAllDocument(List<Document> list)
         {
-            throw new NotImplementedException();
+            try
+            {
+                //await _documents.DeleteMany
+                    return list;
+
+            }
+            catch(Exception e)
+            {
+
+                throw e;
+            }
+            //return false;
         }
 
         public async Task<bool> RemoveDocument(string id)
@@ -71,6 +84,7 @@ namespace Backend.Services
             {
 
                 await _documents.DeleteOneAsync(x => x.id == id);
+               
                 return true;
             }
             catch(Exception e)
