@@ -77,18 +77,37 @@ namespace Backend.Controllers
 
         [HttpPost]
         [Route("deleteMany")]
-        public async Task<ActionResult<List<Document>>> deleteMany([FromBody] List<Document> list)
+        public async Task<List<Document>> deleteMany([FromBody] List<Document> list)
         {
+            
 
-            var docu = await _iDocument.RemoveAllDocument(list);
-            if (docu is null)
+
+            try
             {
-                return Problem("Ningún documento encontrado");
+                if( list != null ) 
+                {
+                    for (int i = 0; i < list.Count; i++)
+                    {
+                        var docu = await _iDocument.GetDocumentById(list[i].id);
+                        if (docu != null)
+                        {
+                            await _iDocument.RemoveDocument(list[i].id);
+                        }
+
+                    }
+                }
+               
+                
+                return await get();
+            }catch(Exception e)
+            {
+                throw e;
             }
+           
 
             //await _iDocument.RemoveDocument(id);
 
-            return docu;
+            
         }
     }
 }
