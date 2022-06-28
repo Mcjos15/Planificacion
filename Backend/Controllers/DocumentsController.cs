@@ -44,6 +44,23 @@ namespace Backend.Controllers
             }
 
         }
+        [HttpPost]
+        [Route("insertMany")]
+        public async Task<IActionResult> inserList([FromBody] List<Document> document)
+        {
+
+            try
+            {
+                await _iDocument.addDocuments(document);
+
+                return Ok();
+            }
+            catch (Exception)
+            {
+                return Problem("Problema al insertar"); ;
+            }
+
+        }
 
         [HttpPost]
         [Route("search")]

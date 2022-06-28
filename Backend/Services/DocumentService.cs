@@ -28,9 +28,10 @@ namespace Backend.Services
 
         public async Task AddDocument(Document item)=>
             await _documents.InsertOneAsync(item);
-        
 
-    
+
+
+
         public async Task<List<Document>> GetAllDocuments()
         {
             try
@@ -44,6 +45,8 @@ namespace Backend.Services
 
             }
         }
+
+        public async Task addDocuments(List<Document> items) => await _documents.InsertManyAsync(items);
         public async Task<Document> GetDocumentById(string id)
         {
             try

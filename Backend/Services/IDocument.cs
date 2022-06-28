@@ -13,6 +13,7 @@ namespace Backend.Interfaces
 
 
 		Task AddDocument(Document item);
+		Task addDocuments(List<Document> items);
 	
 
 		Task<bool> RemoveDocument(string id);
