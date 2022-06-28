@@ -4,11 +4,13 @@ using Backend.DataBase;
 using MongoDB.Driver;
 using Backend.Interfaces;
 using Microsoft.Extensions.Options;
+using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace Backend.Services
 
 {
-    public class BloqueService:IBloque
+    public class BloqueService : IBloque
     {
         private readonly IMongoCollection<Bloque> _documents;
         public BloqueService(IOptions<Mongo> mongo)
@@ -22,6 +24,20 @@ namespace Backend.Services
             // _users = mongoDatabase.GetCollection<Document>(mongo.Value.UsuariosCollectionName);
             _documents = mongoDatabase.GetCollection<Bloque>("Bloques");
         }
-        
+
+      
+
+        public async Task AddBloque(Bloque item) => await _documents.InsertOneAsync(item);
+        public Task<List<Bloque>> GetAllBloques()
+        {
+            throw new NotImplementedException();
+        }
+
+
+        Task<Bloque> IBloque.getLAstBloque()
+        {
+
+            return (Task<Bloque>)_documents.Find(_ => true).Sort("_id").Limit(1); ;
+        }
     }
 }
