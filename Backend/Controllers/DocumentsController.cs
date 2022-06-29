@@ -137,24 +137,60 @@ namespace Backend.Controllers
 
             
         }
+        //--------------MINADO---------------------------------------------------------
         [HttpGet]
         [Route("mining")]
         public async Task<IActionResult> getMining()
         {
-
-
-            
-
             try
             {
                 List<Document> list = await _iDocument.GetAllDocuments();
-                List<Bloque> listBloque = new List<Bloque>();
-                List<Document> listDocumentsMining = new List<Document>();
+              //  List<Bloque> listBloque = new List<Bloque>();
+              //  List<Document> listDocumentsMining = new List<Document>();
                 Bloque bloque;
                 Bloque contBloque;
+                string documentos = "";
 
                 int qRegistros = 5;
                 int cont = 0;
+                if (list.Count >= qRegistros)
+                {
+                    for (int i = 0; i < list.Count; i++)
+                    {
+                        if ((list.Count - i) >= qRegistros)
+                        {
+                            if (cont == qRegistros)
+                            {
+                                bloque = new Bloque();
+                                if (_iBloque.getLAstBloque() == null)
+                                {
+                                    bloque.hashPrevio = "0000000000000000000000000000000000000000000000000000000000000000";
+                                }
+                                else
+                                {
+                                    contBloque = await _iBloque.getLAstBloque();
+                                    bloque.hashPrevio = contBloque.hash;
+                                }
+                                bloque.documentos = documentos;
+                                Console.WriteLine(bloque);
+                              //  mining(bloque);
+                                cont = 0;
+                            }
+                            documentos = string.Format(list[i].Base64);
+                            Console.WriteLine(documentos);
+                            cont++;
+
+                        }
+                        else
+                        {
+                            break;
+                        }
+                        Console.WriteLine(cont);
+                    }
+                    return Ok();
+                }
+               
+                /*
                 for (int i = 0; i < list.Count; i++)
                 {
                     if((list.Count - i) >= qRegistros)
@@ -184,28 +220,18 @@ namespace Backend.Controllers
                         break;
                     }
                     
-                }
+                }*/
                     
-
-
                 return Ok();
             }
             catch (Exception)
             {
                 return Problem("Problema al insertar"); ;
             }
-
-
-
         }
 
         public static void mining(Bloque bloque)
         {
-            
-
-           
-          
-
                 Thread thr = new Thread(new ThreadStart(ThreadProc));
 
                 thr.Start();
@@ -224,7 +250,6 @@ namespace Backend.Controllers
                 }
                 value = true;
 
-
                 Console.WriteLine("-------------");
 
                 Console.WriteLine(date + "//" + prueba + "//" + hash);
@@ -233,9 +258,6 @@ namespace Backend.Controllers
             bloque.prueba = prueba;
             bloque.fechaMinado = DateTime.Parse(date);
             bloque.milisegundos = segundos;
-
-
-
         }
         public static long dateToIn(DateTime dataTime)
         {

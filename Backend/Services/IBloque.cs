@@ -8,7 +8,6 @@ namespace Backend.Interfaces
     {
         Task<List<Bloque>> GetAllBloques();
 
-
         Task AddBloque(Bloque item);
         Task<Bloque> getLAstBloque();
     }

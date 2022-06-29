@@ -32,7 +32,7 @@ namespace Backend.models
 
         [BsonElement("documentos")]
         [JsonPropertyName("documentos")]
-        public List<Document> documentos { get; set; }
+        public string documentos { get; set; }
 
 
         [BsonElement("hashPrevio")]
