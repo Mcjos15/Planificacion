@@ -34,10 +34,33 @@ namespace Backend.Services
         }
 
 
-        Task<Bloque> IBloque.getLAstBloque()
+        public async Task<Bloque> getLAstBloque()
         {
+            try
+            {
+                List<Bloque> listBloque = await _documents.Find(_ => true).ToListAsync();
 
-            return (Task<Bloque>)_documents.Find(_ => true).Sort("_id").Limit(1); ;
+                if(listBloque.Count == 0)
+                {
+                    return null;
+                }
+                else
+                {
+                    return listBloque[listBloque.Count - 1];
+
+                }
+
+                
+
+            }
+            catch (Exception ex)
+            {
+                // log or manage the exception
+                throw ex;
+
+            }
         }
+
+        
     }
 }

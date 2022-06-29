@@ -146,87 +146,58 @@ namespace Backend.Controllers
             {
                 List<Document> list = await _iDocument.GetAllDocuments();
               //  List<Bloque> listBloque = new List<Bloque>();
-              //  List<Document> listDocumentsMining = new List<Document>();
+                List<Document> listDocumentsMining = new List<Document>();
                 Bloque bloque;
                 Bloque contBloque;
                 string documentos = "";
 
                 int qRegistros = 5;
-                int cont = 0;
+                int cont = 1;
+
+              
                 if (list.Count >= qRegistros)
                 {
                     for (int i = 0; i < list.Count; i++)
                     {
-                        if ((list.Count - i) >= qRegistros)
-                        {
-                            if (cont == qRegistros)
+
+                        listDocumentsMining.Add(list[i]);
+
+                        if (cont == qRegistros)
                             {
                                 bloque = new Bloque();
-                                if (_iBloque.getLAstBloque() == null)
-                                {
-                                    bloque.hashPrevio = "0000000000000000000000000000000000000000000000000000000000000000";
-                                }
-                                else
-                                {
-                                    contBloque = await _iBloque.getLAstBloque();
-                                    bloque.hashPrevio = contBloque.hash;
-                                }
-                                bloque.documentos = documentos;
-                                Console.WriteLine(bloque);
-                              //  mining(bloque);
-                                cont = 0;
-                            }
-                            documentos = string.Format(list[i].Base64);
-                            Console.WriteLine(documentos);
-                            cont++;
-
-                        }
-                        else
-                        {
-                            break;
-                        }
-                        Console.WriteLine(cont);
-                    }
-                    return Ok();
-                }
-               
-                /*
-                for (int i = 0; i < list.Count; i++)
-                {
-                    if((list.Count - i) >= qRegistros)
-                    {
-                        if (cont <= qRegistros)
-                        {
-                            bloque = new Bloque();
-                            mining(bloque);
-                            listBloque.Add(bloque);
-                            if(_iBloque.getLAstBloque() == null)
-                            {
-                                bloque.hashPrevio = "0000000000000000000000000000000000000000000000000000000000000000";
-
-                            }
-                            else
+                            if (await _iBloque.getLAstBloque() != null)
                             {
                                 contBloque = await _iBloque.getLAstBloque();
                                 bloque.hashPrevio = contBloque.hash;
                             }
-
-                            await _iBloque.AddBloque(bloque);
-
+                            else
+                            {
+                                bloque.hashPrevio = "0000000000000000000000000000000000000000000000000000000000000000";
+                            }
+                            bloque.documentos = listDocumentsMining;
+                                mining(bloque);
+                                await _iBloque.AddBloque(bloque);
+                            listDocumentsMining = new List<Document>();
+                                cont = 1;
                         }
+                        else
+                        {
+                            documentos = string.Format(list[i].Base64 + "-");
+                            cont++;
+                        }
+                            
+
+
+                      
                     }
-                    else
-                    {
-                        break;
-                    }
-                    
-                }*/
+                    return Ok(list.Count);
+                }
                     
                 return Ok();
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                return Problem("Problema al insertar"); ;
+                return Problem(e.ToString());
             }
         }
 
@@ -234,16 +205,20 @@ namespace Backend.Controllers
         {
                 Thread thr = new Thread(new ThreadStart(ThreadProc));
 
+
                 thr.Start();
+            DateTime dateT = DateTime.Now;
 
-                string date = dateToIn(DateTime.Now).ToString();
+            string date = dateToIn( dateT).ToString(); ;
 
-                string hash = GetSHA256(date + prueba);
+            string hash = GetSHA256(date + prueba);
+            
 
                 while (hash.Substring(0, 4) != "0000")
                 {
                     prueba++;
-                    date = dateToIn(DateTime.Now).ToString();
+                dateT = DateTime.Now;
+                date = dateToIn(dateT).ToString();
                     hash = GetSHA256(date + prueba);
 
                     Console.WriteLine(segundos + "//" + prueba + "//" + hash);
@@ -256,7 +231,7 @@ namespace Backend.Controllers
             //Console.WriteLine(dateDate);
             bloque.hash = hash;
             bloque.prueba = prueba;
-            bloque.fechaMinado = DateTime.Parse(date);
+            bloque.fechaMinado = dateT;
             bloque.milisegundos = segundos;
         }
         public static long dateToIn(DateTime dataTime)
