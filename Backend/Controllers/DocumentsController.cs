@@ -183,6 +183,7 @@ namespace Backend.Controllers
                             bloque.documentos = listDocumentsMining;
                             mining(bloque);
                             await _iBloque.AddBloque(bloque);
+                           // await deleteMany(listDocumentsMining);
                             listDocumentsMining = new List<Document>();
                             cont = 1;
                         }
@@ -205,22 +206,30 @@ namespace Backend.Controllers
 
         public static void mining(Bloque bloque)
         {
-            Thread thr = new Thread(new ThreadStart(ThreadProc));
-            thr.Start();
+
+            string idDocuments = "";
             DateTime dateT = DateTime.Now;
+            foreach (Document docu in bloque.documentos)
+            {
+                idDocuments += docu.Base64 + " - ";
+            }
+            idDocuments = GetSHA256(idDocuments);
+
 
             string date = dateToIn(dateT).ToString(); ;
 
-            string hash = GetSHA256(date + prueba);
+            string hash = GetSHA256(date + prueba + bloque.toStringM()+idDocuments);
             Stopwatch stopwatch = new Stopwatch();
             stopwatch.Start();
-          
+
+            
+
             while (hash.Substring(0, 4) != "0000")
             {
                 prueba++;
                 dateT = DateTime.Now;
                 date = dateToIn(dateT).ToString();
-                hash = GetSHA256(date + prueba);
+                hash = GetSHA256(date + prueba + bloque.toStringM()+ idDocuments);
 
                 Console.WriteLine(segundos + "//" + prueba + "//" + hash);
             }

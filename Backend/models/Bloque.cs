@@ -43,5 +43,11 @@ namespace Backend.models
         [BsonElement("hash")]
         public string hash { get; set; }
 
+        public string toStringM()
+        {
+           
+            return idBloque  + "-"  + hashPrevio+" - ";
+        }
+
     }
 }
