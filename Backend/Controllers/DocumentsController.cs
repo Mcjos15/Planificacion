@@ -183,7 +183,7 @@ namespace Backend.Controllers
                             bloque.documentos = listDocumentsMining;
                             mining(bloque);
                             await _iBloque.AddBloque(bloque);
-                           // await deleteMany(listDocumentsMining);
+                            await deleteMany(listDocumentsMining);
                             listDocumentsMining = new List<Document>();
                             cont = 1;
                         }
