@@ -17,7 +17,11 @@ namespace Backend.models
 
         public string? id { get; set; }
 
+        [BsonElement("idBloque")]
+        public int idBloque { get; set; }
+
         [BsonElement("fechaMinado")]
+
         public DateTime fechaMinado { get; set; }
 
         [BsonElement("prueba")]

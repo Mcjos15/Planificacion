@@ -79,6 +79,19 @@ namespace Backend.Controllers
             return Ok();
         }
 
+        [HttpGet]
+        [Route("getNumberDocuments")]
+        public async Task<ActionResult<Configuraciones>> getNumberDocuments()
+        {
+
+            var config = await _iConfiguraciones.getNumberDocuments();
+            if (config is null)
+            {
+                return NotFound();
+            }
+            return config;
+        }
+
 
     }
 }

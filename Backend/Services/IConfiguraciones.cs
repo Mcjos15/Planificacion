@@ -19,6 +19,8 @@ namespace Backend.Interfaces
 
         Task RemoveConfig(string id);
 
+        Task<Configuraciones> getNumberDocuments();
+
 
 
     }

@@ -50,8 +50,6 @@ namespace Backend.Services
 
                 }
 
-                
-
             }
             catch (Exception ex)
             {

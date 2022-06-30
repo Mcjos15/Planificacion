@@ -67,7 +67,22 @@ namespace Backend.Services
         public async Task RemoveConfig(string id) =>
             await _configuraciones.DeleteOneAsync(x => x.id == id);
 
+        public async Task<Configuraciones> getNumberDocuments()
+        {
+            try
+            {
+                return await _configuraciones.Find(x => x.llave == "bloque").FirstOrDefaultAsync();
+            }
+            catch (Exception ex)
+            {
+                // log or manage the exception
+                throw ex;
+
+            }
+        }
     }
+
+
 
 
 

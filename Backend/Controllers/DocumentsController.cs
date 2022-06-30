@@ -10,6 +10,7 @@ using System.Security.Cryptography;
 using System.Text;
 
 using System.Threading;
+using System.Diagnostics;
 
 namespace Backend.Controllers
 {
@@ -23,7 +24,7 @@ namespace Backend.Controllers
         static bool value = false;
         static int prueba = 0;
         static int segundos = 0;
-        public DocumentsController(IDocument iDocument,IConfiguraciones iConfig,IBloque iBloque)
+        public DocumentsController(IDocument iDocument, IConfiguraciones iConfig, IBloque iBloque)
         {
             _iDocument = iDocument;
             _iConfig = iConfig;
@@ -77,7 +78,7 @@ namespace Backend.Controllers
         [Route("search")]
         public async Task<ActionResult<Document>> getById([FromBody] Document document)
         {
-            var docu = await _iDocument.GetDocumentById(document.id); 
+            var docu = await _iDocument.GetDocumentById(document.id);
 
             if (docu is null)
             {
@@ -89,7 +90,7 @@ namespace Backend.Controllers
 
         [HttpDelete]
         [Route("delete/{id}")]
-        public async Task<IActionResult> delete( string id)
+        public async Task<IActionResult> delete(string id)
         {
 
             var docu = await _iDocument.GetDocumentById(id);
@@ -107,12 +108,12 @@ namespace Backend.Controllers
         [Route("deleteMany")]
         public async Task<List<Document>> deleteMany([FromBody] List<Document> list)
         {
-            
+
 
 
             try
             {
-                if( list != null ) 
+                if (list != null)
                 {
                     for (int i = 0; i < list.Count; i++)
                     {
@@ -124,18 +125,19 @@ namespace Backend.Controllers
 
                     }
                 }
-               
-                
+
+
                 return await get();
-            }catch(Exception e)
+            }
+            catch (Exception e)
             {
                 throw e;
             }
-           
+
 
             //await _iDocument.RemoveDocument(id);
 
-            
+
         }
         //--------------MINADO---------------------------------------------------------
         [HttpGet]
@@ -145,16 +147,15 @@ namespace Backend.Controllers
             try
             {
                 List<Document> list = await _iDocument.GetAllDocuments();
-              //  List<Bloque> listBloque = new List<Bloque>();
                 List<Document> listDocumentsMining = new List<Document>();
+                Configuraciones config = await _iConfig.getNumberDocuments();
                 Bloque bloque;
                 Bloque contBloque;
-                string documentos = "";
 
-                int qRegistros = 5;
+                int qRegistros = Convert.ToInt32(config.numeroRegistro);
                 int cont = 1;
 
-              
+
                 if (list.Count >= qRegistros)
                 {
                     for (int i = 0; i < list.Count; i++)
@@ -163,36 +164,37 @@ namespace Backend.Controllers
                         listDocumentsMining.Add(list[i]);
 
                         if (cont == qRegistros)
-                            {
-                                bloque = new Bloque();
+                        {
+                            bloque = new Bloque();
                             if (await _iBloque.getLAstBloque() != null)
                             {
                                 contBloque = await _iBloque.getLAstBloque();
                                 bloque.hashPrevio = contBloque.hash;
+                               
+                                bloque.idBloque = contBloque.idBloque+1;
+                                Console.WriteLine("-------------");
+
                             }
                             else
                             {
                                 bloque.hashPrevio = "0000000000000000000000000000000000000000000000000000000000000000";
+                                bloque.idBloque = 1;
                             }
                             bloque.documentos = listDocumentsMining;
-                                mining(bloque);
-                                await _iBloque.AddBloque(bloque);
+                            mining(bloque);
+                            await _iBloque.AddBloque(bloque);
                             listDocumentsMining = new List<Document>();
-                                cont = 1;
+                            cont = 1;
                         }
                         else
                         {
-                            documentos = string.Format(list[i].Base64 + "-");
                             cont++;
                         }
-                            
 
-
-                      
                     }
                     return Ok(list.Count);
                 }
-                    
+
                 return Ok();
             }
             catch (Exception e)
@@ -203,36 +205,37 @@ namespace Backend.Controllers
 
         public static void mining(Bloque bloque)
         {
-                Thread thr = new Thread(new ThreadStart(ThreadProc));
-
-
-                thr.Start();
+            Thread thr = new Thread(new ThreadStart(ThreadProc));
+            thr.Start();
             DateTime dateT = DateTime.Now;
 
-            string date = dateToIn( dateT).ToString(); ;
+            string date = dateToIn(dateT).ToString(); ;
 
             string hash = GetSHA256(date + prueba);
-            
-
-                while (hash.Substring(0, 4) != "0000")
-                {
-                    prueba++;
+            Stopwatch stopwatch = new Stopwatch();
+            stopwatch.Start();
+          
+            while (hash.Substring(0, 4) != "0000")
+            {
+                prueba++;
                 dateT = DateTime.Now;
                 date = dateToIn(dateT).ToString();
-                    hash = GetSHA256(date + prueba);
+                hash = GetSHA256(date + prueba);
 
-                    Console.WriteLine(segundos + "//" + prueba + "//" + hash);
-                }
-                value = true;
+                Console.WriteLine(segundos + "//" + prueba + "//" + hash);
+            }
 
-                Console.WriteLine("-------------");
+            stopwatch.Stop();
+           
+            value = true;
 
-                Console.WriteLine(date + "//" + prueba + "//" + hash);
+            Console.WriteLine("-------------");
+            Console.WriteLine(date + "//" + prueba + "//" + hash);
             //Console.WriteLine(dateDate);
             bloque.hash = hash;
             bloque.prueba = prueba;
             bloque.fechaMinado = dateT;
-            bloque.milisegundos = segundos;
+            bloque.milisegundos = (int)stopwatch.ElapsedMilliseconds;
         }
         public static long dateToIn(DateTime dataTime)
         {
