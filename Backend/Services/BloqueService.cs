@@ -12,7 +12,7 @@ namespace Backend.Services
 {
     public class BloqueService : IBloque
     {
-        private readonly IMongoCollection<Bloque> _documents;
+        private readonly IMongoCollection<Bloque> _bloque;
         public BloqueService(IOptions<Mongo> mongo)
         {
             //context = new DBContextClass(mongo);
@@ -22,15 +22,24 @@ namespace Backend.Services
             var mongoDatabase = mongoClient.GetDatabase(mongo.Value.DatabaseName);
 
             // _users = mongoDatabase.GetCollection<Document>(mongo.Value.UsuariosCollectionName);
-            _documents = mongoDatabase.GetCollection<Bloque>("Bloques");
+            _bloque = mongoDatabase.GetCollection<Bloque>("Bloques");
         }
 
       
 
-        public async Task AddBloque(Bloque item) => await _documents.InsertOneAsync(item);
-        public Task<List<Bloque>> GetAllBloques()
+        public async Task AddBloque(Bloque item) => await _bloque.InsertOneAsync(item);
+        public async Task<List<Bloque>> GetAllBloques()
         {
-            throw new NotImplementedException();
+            try
+            {
+                return await _bloque.Find(_ => true).ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                // log or manage the exception
+                throw ex;
+
+            }
         }
 
 
@@ -38,7 +47,7 @@ namespace Backend.Services
         {
             try
             {
-                List<Bloque> listBloque = await _documents.Find(_ => true).ToListAsync();
+                List<Bloque> listBloque = await _bloque.Find(_ => true).ToListAsync();
 
                 if(listBloque.Count == 0)
                 {

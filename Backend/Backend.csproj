@@ -7,10 +7,12 @@
 
   <ItemGroup>
     <None Remove="models\" />
+    <None Remove="Logic\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Interfaces\" />
     <Folder Include="Collections\" />
+    <Folder Include="Logic\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="MongoDB.Driver" Version="2.15.1" />
