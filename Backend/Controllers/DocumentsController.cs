@@ -22,11 +22,13 @@ namespace Backend.Controllers
         private readonly IDocument _iDocument;
         private readonly IBloque _iBloque;
         private readonly IConfiguraciones _iConfig;
-        public DocumentsController(IDocument iDocument, IConfiguraciones iConfig, IBloque iBloque)
+        private readonly IMining _iMining;
+        public DocumentsController(IDocument iDocument, IConfiguraciones iConfig, IBloque iBloque, IMining iMining)
         {
             _iDocument = iDocument;
             _iConfig = iConfig;
             _iBloque = iBloque;
+            _iMining = iMining;
 
         }
 
@@ -145,56 +147,12 @@ namespace Backend.Controllers
             try
             {
                 List<Document> list = await _iDocument.GetAllDocuments();
-                List<Document> listDocumentsMining = new List<Document>();
+               
                 Configuraciones config = await _iConfig.getNumberDocuments();
-                Bloque bloque;
-                Bloque contBloque;
-                bool value = false;
-                int prueba = 0;
-                int segundos = 0;
-                Minado minado = new Minado(value,prueba,segundos);
-                int qRegistros = Convert.ToInt32(config.numeroRegistro);
-                int cont = 1;
 
+                Minado minado = new Minado(_iDocument, _iConfig, _iBloque, _iMining);
 
-                if (list.Count >= qRegistros)
-                {
-                    for (int i = 0; i < list.Count; i++)
-                    {
-
-                        listDocumentsMining.Add(list[i]);
-
-                        if (cont == qRegistros)
-                        {
-                            bloque = new Bloque();
-                            if (await _iBloque.getLAstBloque() != null)
-                            {
-                                contBloque = await _iBloque.getLAstBloque();
-                                bloque.hashPrevio = contBloque.hash;
-                               
-                                bloque.idBloque = contBloque.idBloque+1;
-
-                            }
-                            else
-                            {
-                                bloque.hashPrevio = "0000000000000000000000000000000000000000000000000000000000000000";
-                                bloque.idBloque = 1;
-                            }
-                            bloque.documentos = listDocumentsMining;
-                            minado.mining(bloque);
-                            await _iBloque.AddBloque(bloque);
-                            await deleteMany(listDocumentsMining);
-                            listDocumentsMining = new List<Document>();
-                            cont = 1;
-                        }
-                        else
-                        {
-                            cont++;
-                        }
-
-                    }
-                    return Ok(list.Count);
-                }
+                minado.getMinigBloque(list, config);
 
                 return Ok();
             }
@@ -203,8 +161,6 @@ namespace Backend.Controllers
                 return Problem(e.ToString());
             }
         }
-
-       
 
     }
 

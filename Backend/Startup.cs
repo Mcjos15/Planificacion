@@ -47,6 +47,7 @@ namespace Backend
             services.AddSingleton<IConfiguraciones,ConfiguracionesService>();
             services.AddSingleton<IDocument, DocumentService>();
             services.AddSingleton<IBloque, BloqueService>();
+            services.AddSingleton<IMining, MiningService>();
             services.AddControllers().AddJsonOptions(
         options => options.JsonSerializerOptions.PropertyNamingPolicy = null);
             services.AddCors(options => {
